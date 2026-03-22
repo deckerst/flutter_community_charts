@@ -202,10 +202,7 @@ class PercentInjector<D> implements ChartBehavior<D> {
         });
 
         break;
-
-      default:
-        throw ArgumentError('Unsupported totalType: ${totalType}');
-    }
+      }
   }
 
   @override

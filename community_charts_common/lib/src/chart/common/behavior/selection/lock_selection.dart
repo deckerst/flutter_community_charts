@@ -107,7 +107,6 @@ class LockSelection<D> implements ChartBehavior<D> {
         chart.registerTappable(this);
         break;
       case SelectionTrigger.hover:
-      default:
         chart.unregisterTappable(this);
         break;
     }

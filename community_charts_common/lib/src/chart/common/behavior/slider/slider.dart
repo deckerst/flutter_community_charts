@@ -427,10 +427,7 @@ class Slider<D> implements ChartBehavior<D> {
         case SliderHandlePosition.manual:
           handleReferenceY = positionY;
           break;
-        default:
-          throw ArgumentError('Slider does not support the handle position '
-              '"${_style.handlePosition}"');
-      }
+        }
 
       // Move the slider handle along the domain axis.
       _handleBounds = Rectangle<int>(

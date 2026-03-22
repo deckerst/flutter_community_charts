@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:community_charts_common/community_charts_common.dart' as common
-    show Color;
 import 'dart:ui' as ui;
+
+import 'package:community_charts_common/community_charts_common.dart' as common show Color;
 
 class ColorUtil {
   static ui.Color toDartColor(common.Color color) {
@@ -24,6 +24,10 @@ class ColorUtil {
 
   static common.Color fromDartColor(ui.Color color) {
     return common.Color(
-        r: color.red, g: color.green, b: color.blue, a: color.alpha);
+      r: (color.r * 255.0).round().clamp(0, 255),
+      g: (color.g * 255.0).round().clamp(0, 255),
+      b: (color.b * 255.0).round().clamp(0, 255),
+      a: (color.a * 255.0).round().clamp(0, 255),
+    );
   }
 }

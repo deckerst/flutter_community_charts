@@ -271,24 +271,24 @@ class ChartContainerRenderObject<D> extends RenderCustomPaint
 
   @override
   void enableA11yExploreMode(List<common.A11yNode> nodes,
-      {String? announcement}) {
+      {String? announcement, BuildContext? context}) {
     _a11yNodes = nodes;
     _exploreMode = true;
     _setNewPainter();
     requestRebuild();
-    if (announcement != null) {
-      SemanticsService.announce(announcement, textDirection);
+    if (announcement != null && context != null) {
+      SemanticsService.sendAnnouncement(View.of(context), announcement, textDirection);
     }
   }
 
   @override
-  void disableA11yExploreMode({String? announcement}) {
+  void disableA11yExploreMode({String? announcement, BuildContext? context}) {
     _a11yNodes = [];
     _exploreMode = false;
     _setNewPainter();
     requestRebuild();
-    if (announcement != null) {
-      SemanticsService.announce(announcement, textDirection);
+    if (announcement != null && context != null) {
+      SemanticsService.sendAnnouncement(View.of(context), announcement, textDirection);
     }
   }
 

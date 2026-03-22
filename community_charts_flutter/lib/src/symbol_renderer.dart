@@ -19,6 +19,7 @@ import 'package:community_charts_common/community_charts_common.dart' as common
 import 'package:flutter/widgets.dart';
 import 'chart_canvas.dart' show ChartCanvas;
 import 'graphics_factory.dart' show GraphicsFactory;
+import 'util/color.dart';
 
 /// Flutter widget responsible for painting a common SymbolRenderer from the
 /// chart.
@@ -34,7 +35,7 @@ class SymbolRendererCanvas implements SymbolRendererBuilder {
   Widget build(BuildContext context,
       {Color? color, required Size size, bool enabled = true}) {
     if (color != null && !enabled) {
-      color = color.withOpacity(0.26);
+      color = color.withAlpha(66);
     }
 
     return new SizedBox.fromSize(
@@ -100,8 +101,7 @@ class _SymbolCustomPaint extends CustomPainter {
         new Rectangle<num>(0, 0, size.width.toInt(), size.height.toInt());
     final commonColor = color == null
         ? null
-        : new common.Color(
-            r: color!.red, g: color!.green, b: color!.blue, a: color!.alpha);
+        : ColorUtil.fromDartColor(color!);
     symbolRenderer.paint(
         new ChartCanvas(canvas, GraphicsFactory(context)), bounds,
         fillColor: commonColor,

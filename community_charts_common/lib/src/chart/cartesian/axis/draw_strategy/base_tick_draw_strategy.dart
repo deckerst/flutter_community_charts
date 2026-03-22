@@ -483,7 +483,6 @@ abstract class BaseTickDrawStrategy<D> implements TickDrawStrategy<D> {
                 .toInt();
             break;
           case TextDirection.center:
-          default:
             x = (locationPx - labelOffsetPx).toInt();
             break;
         }
@@ -523,7 +522,6 @@ abstract class BaseTickDrawStrategy<D> implements TickDrawStrategy<D> {
                 .toInt();
             break;
           case _PixelVerticalDirection.center:
-          default:
             y = (locationPx - labelHeight / 2 + labelOffsetPx).toInt();
             break;
         }
@@ -551,7 +549,6 @@ abstract class BaseTickDrawStrategy<D> implements TickDrawStrategy<D> {
         }
         return TextDirection.center;
       case TickLabelAnchor.centered:
-      default:
         return TextDirection.center;
     }
   }
@@ -573,7 +570,6 @@ abstract class BaseTickDrawStrategy<D> implements TickDrawStrategy<D> {
         }
         return _PixelVerticalDirection.center;
       case TickLabelAnchor.centered:
-      default:
         return _PixelVerticalDirection.center;
     }
   }
