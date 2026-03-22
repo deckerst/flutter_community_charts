@@ -177,10 +177,11 @@ bool _doesLabelFit(bool allowLabelOverflow, TextElement textElement,
   // When allowLabelOverflow is disabled and maxWidthStrategy is ellipsize,
   // compares [textElement] width with [maxWidth].
   final ellipsizedText = textElement.text;
-  final ellipsizedElementWidth = (createTextElement(ellipsizedText)
-        ..textStyle = textElement.textStyle)
+  final ellipsizedTextElement = createTextElement(ellipsizedText)
+        ..textStyle = textElement.textStyle;
+  final ellipsizedElementWidth = ellipsizedTextElement
       .measurement
       .horizontalSliceWidth;
-
+  ellipsizedTextElement.dispose();
   return ellipsizedElementWidth <= maxWidth;
 }

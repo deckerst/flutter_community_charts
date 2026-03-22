@@ -360,13 +360,16 @@ abstract class BaseTickDrawStrategy<D> implements TickDrawStrategy<D> {
 
     final maxHorizontalSliceWidth = ticks.fold(0.0, (double prevMax, tick) {
       final labelElements = splitLabel(tick.textElement!);
+      final labelHeight = getLabelHeight(labelElements);
+      final labelWidth = getLabelWidth(labelElements);
+      labelElements.forEach((v) => v.dispose());
 
       return max(
           prevMax,
           calculateWidthForRotatedLabel(
                 labelRotation(collision: collision),
-                getLabelHeight(labelElements),
-                getLabelWidth(labelElements),
+                labelHeight,
+                labelWidth,
               ) +
               labelOffsetFromAxisPx(collision: collision));
     }).round();
@@ -381,13 +384,16 @@ abstract class BaseTickDrawStrategy<D> implements TickDrawStrategy<D> {
       {bool collision = false}) {
     final maxVerticalSliceWidth = ticks.fold(0.0, (double prevMax, tick) {
       final labelElements = splitLabel(tick.textElement!);
+      final labelHeight = getLabelHeight(labelElements);
+      final labelWidth = getLabelWidth(labelElements);
+      labelElements.forEach((v) => v.dispose());
 
       return max(
           prevMax,
           calculateHeightForRotatedLabel(
             labelRotation(collision: collision),
-            getLabelHeight(labelElements),
-            getLabelWidth(labelElements),
+            labelHeight,
+            labelWidth,
           ));
     }).round();
 
@@ -530,6 +536,7 @@ abstract class BaseTickDrawStrategy<D> implements TickDrawStrategy<D> {
           rotation: _degToRad(labelRotation(collision: collision).toDouble()));
       multiLineLabelOffset +=
           multiLineLabelPadding + line.measurement.verticalSliceWidth.round();
+      line.dispose();
     }
   }
 

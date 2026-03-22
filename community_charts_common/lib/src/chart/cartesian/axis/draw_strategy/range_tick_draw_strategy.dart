@@ -233,6 +233,10 @@ class RangeTickDrawStrategy<D> extends SmallTickDrawStrategy<D> {
     final maxHorizontalSliceWidth = ticks.fold(0.0, (num prevMax, tick) {
       assert(tick.textElement != null);
       final labelElements = splitLabel(tick.textElement!);
+      final labelHeight = getLabelHeight(labelElements);
+      final labelWidth = getLabelWidth(labelElements);
+      labelElements.forEach((v) => v.dispose());
+
       if (tick is RangeAxisTicks) {
         // Find the maximum within prevMax, label total height and
         // labelOffsetFromAxisPx + rangeShadeHeightPx.
@@ -241,8 +245,8 @@ class RangeTickDrawStrategy<D> extends SmallTickDrawStrategy<D> {
                 prevMax,
                 calculateWidthForRotatedLabel(
                       labelRotation(collision: collision),
-                      getLabelHeight(labelElements),
-                      getLabelWidth(labelElements),
+                      labelHeight,
+                      labelWidth,
                     ) +
                     labelOffsetFromAxisPx(collision: collision)),
             labelOffsetFromAxisPx(collision: collision) + rangeShadeHeightPx);
@@ -251,8 +255,8 @@ class RangeTickDrawStrategy<D> extends SmallTickDrawStrategy<D> {
             prevMax,
             calculateWidthForRotatedLabel(
                   labelRotation(collision: collision),
-                  getLabelHeight(labelElements),
-                  getLabelWidth(labelElements),
+                  labelHeight,
+                  labelWidth,
                 ) +
                 labelOffsetFromAxisPx(collision: collision));
       }
@@ -268,6 +272,9 @@ class RangeTickDrawStrategy<D> extends SmallTickDrawStrategy<D> {
       {bool collision = false}) {
     var maxVerticalSliceWidth = ticks.fold(0.0, (num prevMax, tick) {
       final labelElements = splitLabel(tick.textElement!);
+      final labelHeight = getLabelHeight(labelElements);
+      final labelWidth = getLabelWidth(labelElements);
+      labelElements.forEach((v) => v.dispose());
 
       if (tick is RangeAxisTicks) {
         // Find the maximum within prevMax, label total height and
@@ -277,8 +284,8 @@ class RangeTickDrawStrategy<D> extends SmallTickDrawStrategy<D> {
               prevMax,
               calculateHeightForRotatedLabel(
                     labelRotation(collision: collision),
-                    getLabelHeight(labelElements),
-                    getLabelWidth(labelElements),
+                    labelHeight,
+                    labelWidth,
                   ) +
                   rangeShadeOffsetFromAxisPx,
             ),
@@ -288,8 +295,8 @@ class RangeTickDrawStrategy<D> extends SmallTickDrawStrategy<D> {
                 prevMax,
                 calculateHeightForRotatedLabel(
                   labelRotation(collision: collision),
-                  getLabelHeight(labelElements),
-                  getLabelWidth(labelElements),
+                  labelHeight,
+                  labelWidth,
                 )) +
             labelOffsetFromAxisPx(collision: collision);
       }
@@ -407,6 +414,7 @@ class RangeTickDrawStrategy<D> extends SmallTickDrawStrategy<D> {
       canvas.drawText(line, x, y + multiLineLabelOffset);
       multiLineLabelOffset += BaseTickDrawStrategy.multiLineLabelPadding +
           line.measurement.verticalSliceWidth.round();
+      line.dispose();
     }
   }
 }
