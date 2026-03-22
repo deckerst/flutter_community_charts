@@ -16,7 +16,9 @@
 import 'dart:math' show Rectangle, min, max;
 
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:meta/meta.dart' show protected, visibleForTesting;
+import 'package:community_charts_common/src/common/leak_utils.dart';
+import 'package:leak_tracker/leak_tracker.dart';
+import 'package:meta/meta.dart' show protected, visibleForTesting, mustCallSuper;
 
 import '../../../../community_charts_common.dart';
 import 'axis_tick.dart' show AxisTicks;
@@ -146,7 +148,24 @@ abstract class Axis<D> extends ImmutableAxis<D> implements LayoutView {
       : _defaultScale = scale,
         _defaultTickProvider = tickProvider,
         _defaultTickFormatter = tickFormatter,
-        _tickFormatter = tickFormatter;
+        _tickFormatter = tickFormatter {
+    if (kFlutterMemoryAllocationsEnabled) {
+      LeakTracking.dispatchObjectCreated(
+        library: 'charts_common',
+        className: '$Axis',
+        object: this,
+      );
+    }
+  }
+
+  @mustCallSuper
+  void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      LeakTracking.dispatchObjectDisposed(object: this);
+    }
+    _providedTicks?.forEach((v) => v.dispose());
+    _axisTicks.forEach((v) => v.dispose());
+  }
 
   @protected
   MutableScale<D>? get mutableScale => scale;
@@ -282,6 +301,7 @@ abstract class Axis<D> extends ImmutableAxis<D> implements LayoutView {
 
     // TODO: Ensure that tick providers take manually configured
     // viewport settings into account, so that we still get the right number.
+    _providedTicks?.forEach((v) => v.dispose());
     _providedTicks = tickProvider!.getTicks(
         context: context,
         graphicsFactory: graphicsFactory!,
@@ -552,7 +572,11 @@ abstract class Axis<D> extends ImmutableAxis<D> implements LayoutView {
   @override
   void paint(ChartCanvas canvas, double animationPercent) {
     if (animationPercent == 1.0) {
-      _axisTicks.removeWhere((t) => t.markedForRemoval);
+      final oldTicks = _axisTicks.where((t) => t.markedForRemoval).toSet();
+      oldTicks.forEach((tick) {
+        tick.dispose();
+        _axisTicks.remove(tick);
+      });
     }
 
     for (var i = 0; i < _axisTicks.length; i++) {

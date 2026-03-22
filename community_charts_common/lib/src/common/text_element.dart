@@ -13,11 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:meta/meta.dart';
+
 import 'text_measurement.dart' show TextMeasurement;
 import 'text_style.dart' show TextStyle;
 
 /// Interface for accessing text measurement and painter.
 abstract class TextElement {
+  @mustCallSuper
+  void dispose();
+
   /// The [TextStyle] of this [TextElement].
   TextStyle? get textStyle;
 

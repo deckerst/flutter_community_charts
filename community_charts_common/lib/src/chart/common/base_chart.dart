@@ -15,7 +15,7 @@
 
 import 'dart:math' show Rectangle, Point;
 
-import 'package:meta/meta.dart' show protected;
+import 'package:meta/meta.dart' show protected, mustCallSuper;
 
 import '../../common/gesture_listener.dart' show GestureListener;
 import '../../common/graphics_factory.dart' show GraphicsFactory;
@@ -700,7 +700,8 @@ abstract class BaseChart<D> {
   }
 
   /// Called to free up any resources due to chart going away.
-  void destroy() {
+  @mustCallSuper
+  void dispose() {
     // Walk them in add order to support behaviors that remove other behaviors.
     for (var i = 0; i < _behaviorStack.length; i++) {
       _behaviorStack[i].removeFrom(this);

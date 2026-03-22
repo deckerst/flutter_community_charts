@@ -296,7 +296,7 @@ class ChartCanvas implements common.ChartCanvas {
       canvas.translate(offsetX.toDouble(), offsetY.toDouble());
       canvas.rotate(rotation);
 
-      textElement.textPainter!.paint(canvas, new Offset(0.0, 0.0));
+      textElement.textPainter.paint(canvas, new Offset(0.0, 0.0));
 
       canvas.restore();
     } else {
@@ -312,7 +312,7 @@ class ChartCanvas implements common.ChartCanvas {
 
       offsetY -= flutterTextElement.verticalFontShift;
 
-      textElement.textPainter!
+      textElement.textPainter
           .paint(canvas, new Offset(offsetX.toDouble(), offsetY.toDouble()));
     }
   }

@@ -15,7 +15,9 @@
 
 import 'dart:collection' show LinkedHashMap;
 
-import 'package:meta/meta.dart' show protected;
+import 'package:community_charts_common/src/common/leak_utils.dart';
+import 'package:leak_tracker/leak_tracker.dart';
+import 'package:meta/meta.dart' show protected, mustCallSuper;
 
 import '../../common/graphics_factory.dart' show GraphicsFactory;
 import '../../data/series.dart' show Series;
@@ -166,7 +168,28 @@ abstract class CartesianChart<D> extends BaseChart<D> {
         _disjointMeasureAxes =
             // ignore: prefer_collection_literals
             disjointMeasureAxes ?? LinkedHashMap<String, NumericAxis>(),
-        super(layoutConfig: layoutConfig ?? _defaultLayoutConfig);
+        super(layoutConfig: layoutConfig ?? _defaultLayoutConfig) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      LeakTracking.dispatchObjectCreated(
+        library: 'charts_common',
+        className: '$CartesianChart',
+        object: this,
+      );
+    }
+  }
+
+  @mustCallSuper
+  void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      LeakTracking.dispatchObjectDisposed(object: this);
+    }
+    _domainAxis?.dispose();
+    _newDomainAxis?.dispose();
+    _primaryMeasureAxis.dispose();
+    _secondaryMeasureAxis.dispose();
+    _disjointMeasureAxes.values.forEach((v) => v.dispose());
+    super.dispose();
+  }
 
   @override
   void init(ChartContext context, GraphicsFactory graphicsFactory) {
@@ -201,6 +224,7 @@ abstract class CartesianChart<D> extends BaseChart<D> {
   /// [configurationChanged].
   set domainAxisSpec(AxisSpec<D> axisSpec) {
     if (_domainAxisSpec != axisSpec) {
+      _newDomainAxis?.dispose();
       _newDomainAxis = createDomainAxisFromSpec(axisSpec);
       _newDomainAxisSpec = axisSpec;
     }
@@ -220,6 +244,7 @@ abstract class CartesianChart<D> extends BaseChart<D> {
         removeView(_domainAxis!);
       }
 
+      _domainAxis?.dispose();
       _domainAxis = _newDomainAxis;
       _domainAxis!
         ..context = context
@@ -244,6 +269,7 @@ abstract class CartesianChart<D> extends BaseChart<D> {
       _primaryMeasureAxisSpec = _newPrimaryMeasureAxisSpec;
       removeView(_primaryMeasureAxis);
 
+      _primaryMeasureAxis.dispose();
       _primaryMeasureAxis =
           _primaryMeasureAxisSpec?.createAxis() ?? NumericAxis();
 
@@ -260,6 +286,7 @@ abstract class CartesianChart<D> extends BaseChart<D> {
       _secondaryMeasureAxisSpec = _newSecondaryMeasureAxisSpec;
       removeView(_secondaryMeasureAxis);
 
+      _secondaryMeasureAxis.dispose();
       _secondaryMeasureAxis =
           _secondaryMeasureAxisSpec?.createAxis() ?? NumericAxis();
 
@@ -279,6 +306,7 @@ abstract class CartesianChart<D> extends BaseChart<D> {
       });
 
       // ignore: prefer_collection_literals, https://github.com/dart-lang/linter/issues/1649
+      _disjointMeasureAxes.values.forEach((v) => v.dispose());
       _disjointMeasureAxes = LinkedHashMap<String, NumericAxis>();
       _disjointMeasureAxesSpec?.forEach((axisId, axisSpec) {
         _disjointMeasureAxes[axisId] = axisSpec.createAxis();

@@ -303,7 +303,7 @@ class ChartContainerRenderObject<D> extends RenderCustomPaint
 
   @override
   void dispose() {
-    _chart?.destroy();
+    _chart?.dispose();
     super.dispose();
   }
 }

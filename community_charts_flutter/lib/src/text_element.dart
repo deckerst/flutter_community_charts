@@ -21,8 +21,10 @@ import 'package:community_charts_common/community_charts_common.dart' as common
         TextDirection,
         TextMeasurement,
         TextStyle;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart'
     show Color, TextBaseline, TextPainter, TextScaler, TextSpan, TextStyle, FontWeight;
+import 'package:leak_tracker/leak_tracker.dart';
 
 /// Flutter implementation for text measurement and painter.
 class TextElement implements common.TextElement {
@@ -40,14 +42,38 @@ class TextElement implements common.TextElement {
   int? _maxWidth;
   common.MaxWidthStrategy? _maxWidthStrategy;
 
-  late TextPainter _textPainter;
+  TextPainter? _textPainter;
 
   late common.TextMeasurement _measurement;
 
   double? _opacity;
 
   TextElement(this.text, {common.TextStyle? style, this.textScaler})
-      : _textStyle = style;
+      : _textStyle = style {
+    if (kFlutterMemoryAllocationsEnabled) {
+      LeakTracking.dispatchObjectCreated(
+        library: 'charts_flutter',
+        className: '$TextElement',
+        object: this,
+      );
+    }
+  }
+
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    // the same `textElement` may be shared for update efficiency,
+    // (e.g. `common` library `Axis` animated ticks and provided ticks)
+    // so we prevent disposing the underlying `TextPainter` more than once
+    if (_disposed) return;
+    _disposed = true;
+
+    if (kFlutterMemoryAllocationsEnabled) {
+      LeakTracking.dispatchObjectDisposed(object: this);
+    }
+    _textPainter?.dispose();
+  }
 
   @override
   common.TextStyle? get textStyle => _textStyle;
@@ -123,14 +149,14 @@ class TextElement implements common.TextElement {
       _refreshPainter();
     }
 
-    return (_textPainter.height * 0.1).ceil();
+    return (textPainter.height * 0.1).ceil();
   }
 
-  TextPainter? get textPainter {
+  TextPainter get textPainter {
     if (!_painterReady) {
       _refreshPainter();
     }
-    return _textPainter;
+    return _textPainter!;
   }
 
   /// Create text painter and measure based on current settings
@@ -145,7 +171,7 @@ class TextElement implements common.TextElement {
             textStyle!.color!.b,
           );
 
-    _textPainter = new TextPainter(
+    final newTextPainter = new TextPainter(
         text: new TextSpan(
             text: text,
             style: new TextStyle(
@@ -164,13 +190,13 @@ class TextElement implements common.TextElement {
           : null;
 
     if (textScaler != null) {
-      _textPainter.textScaler = textScaler!;
+      newTextPainter.textScaler = textScaler!;
     }
 
-    _textPainter.layout(maxWidth: maxWidth?.toDouble() ?? double.infinity);
+    newTextPainter.layout(maxWidth: maxWidth?.toDouble() ?? double.infinity);
 
     final baseline =
-        _textPainter.computeDistanceToActualBaseline(TextBaseline.alphabetic);
+        newTextPainter.computeDistanceToActualBaseline(TextBaseline.alphabetic);
 
     // Estimating the actual draw height to 70% of measures size.
     //
@@ -178,10 +204,12 @@ class TextElement implements common.TextElement {
     // difficult to shift the text around to get it to visually line up
     // vertically with other components.
     _measurement = new common.TextMeasurement(
-        horizontalSliceWidth: _textPainter.width,
-        verticalSliceWidth: _textPainter.height * 0.70,
+        horizontalSliceWidth: newTextPainter.width,
+        verticalSliceWidth: newTextPainter.height * 0.70,
         baseline: baseline);
 
+    _textPainter?.dispose();
+    _textPainter = newTextPainter;
     _painterReady = true;
   }
 

@@ -10,6 +10,7 @@ environment:
 dependencies:
   intl:
   collection:
+  leak_tracker:
   meta:
   vector_math:
 

@@ -17,6 +17,7 @@ dependencies:
       ref: aves
       path: community_charts_common
   collection:
+  leak_tracker:
   meta:
 
 dev_dependencies:

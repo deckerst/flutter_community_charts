@@ -357,7 +357,6 @@ class _FlutterSeriesLegend<D> extends common.SeriesLegend<D>
         break;
 
       case common.LegendTapHandling.none:
-      default:
         break;
     }
   }

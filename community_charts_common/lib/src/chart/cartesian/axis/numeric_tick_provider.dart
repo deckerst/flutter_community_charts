@@ -15,6 +15,8 @@
 
 import 'dart:math' show log, log10e, max, min, pow;
 
+import 'package:collection/collection.dart';
+
 import '../../../common/graphics_factory.dart' show GraphicsFactory;
 import '../../common/chart_context.dart' show ChartContext;
 import '../../common/unitconverter/identity_converter.dart'
@@ -270,6 +272,9 @@ class NumericTickProvider extends BaseTickProvider<num> {
     final mutableScale =
         viewportExtensionEnabled ? scale.copy() as NumericScale : null;
 
+    // remember tick creation for cleanup later
+    final createdTicks = <Tick<num>>{};
+
     // Walk to available tick count from max to min looking for the first one
     // that gives you the least amount of range used. If a non colliding tick
     // count is not found use the min tick count to generate ticks.
@@ -303,6 +308,7 @@ class NumericTickProvider extends BaseTickProvider<num> {
             formatterValueCache: formatterValueCache,
             tickDrawStrategy: tickDrawStrategy,
             stepSize: stepInfo.stepSize);
+        createdTicks.addAll(preferredTicks);
 
         // Request collision check from draw strategy.
         final collisionReport =
@@ -332,6 +338,9 @@ class NumericTickProvider extends BaseTickProvider<num> {
     if (viewportExtensionEnabled && scale.viewportDomain != viewportDomain) {
       scale.viewportDomain = viewportDomain;
     }
+
+    // disposed unused ticks
+    createdTicks.whereNot(ticks.contains).forEach((tick) => tick.dispose());
 
     return ticks;
   }

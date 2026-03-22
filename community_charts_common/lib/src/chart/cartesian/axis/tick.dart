@@ -13,6 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:community_charts_common/src/common/leak_utils.dart';
+import 'package:leak_tracker/leak_tracker.dart';
+import 'package:meta/meta.dart';
+
 import '../../../common/text_element.dart';
 
 /// A labeled point on an axis.
@@ -38,7 +42,25 @@ class Tick<D> {
       {required this.value,
       required this.textElement,
       this.locationPx,
-      this.labelOffsetPx});
+      this.labelOffsetPx}) {
+    if (kFlutterMemoryAllocationsEnabled) {
+      LeakTracking.dispatchObjectCreated(
+        library: 'charts_common',
+        className: '$Tick',
+        object: this,
+      );
+    }
+  }
+
+  @mustCallSuper
+  void dispose() {
+    if (kFlutterMemoryAllocationsEnabled) {
+      LeakTracking.dispatchObjectDisposed(object: this);
+    }
+    // several ticks may share the same `textElement`,
+    // e.g. `Axis` animated ticks and provided ticks
+    textElement?.dispose();
+  }
 
   @override
   String toString() => 'Tick(value: $value, locationPx: $locationPx, '
