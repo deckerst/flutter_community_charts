@@ -29,7 +29,7 @@ import 'package:community_charts_common/community_charts_common.dart' as common
         StyleFactory,
         TextElement,
         TextDirection;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'text_element.dart' show TextElement;
 import 'canvas/circle_sector_painter.dart' show CircleSectorPainter;
 import 'canvas/line_painter.dart' show LinePainter;

@@ -20,7 +20,7 @@ import 'dart:math';
 // EXCLUDE_FROM_GALLERY_DOCS_END
 import 'package:community_charts_flutter/community_charts_flutter.dart'
     as charts;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LineAnimationZoomChart extends StatelessWidget {
   final List<charts.Series<dynamic, num>> seriesList;

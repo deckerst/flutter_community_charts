@@ -15,7 +15,7 @@
 
 import 'package:community_charts_flutter/community_charts_flutter.dart'
     as charts;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'dart:developer';
 import 'app_config.dart';
 import 'drawer.dart';

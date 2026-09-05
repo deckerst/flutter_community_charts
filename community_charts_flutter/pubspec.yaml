@@ -5,7 +5,7 @@ repository: https://github.com/juliansteenbakker/community_charts
 publish_to: none
 
 environment:
-  sdk: ">=3.0.1 <4.0.0"
+  sdk: ">=3.13.2 <4.0.0"
 
 dependencies:
   flutter:
@@ -18,6 +18,7 @@ dependencies:
       path: community_charts_common
   collection:
   leak_tracker:
+  material_ui:
   meta:
 
 dev_dependencies:

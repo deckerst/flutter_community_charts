@@ -371,7 +371,7 @@ abstract class BaseBarRenderer<D, R extends BaseBarRendererElement,
 
     final orderedSeriesList = getOrderedSeriesList(seriesList);
 
-    orderedSeriesList.forEach((final ImmutableSeries<D> series) {
+    orderedSeriesList.forEach((ImmutableSeries<D> series) {
       final domainAxis = series.getAttr(domainAxisKey) as ImmutableAxis<D>;
       final domainFn = series.domainFn;
       final measureAxis = series.getAttr(measureAxisKey) as ImmutableAxis<num>;

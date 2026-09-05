@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'package:flutter/material.dart' show BuildContext;
+import 'package:material_ui/material_ui.dart' show BuildContext;
 import 'package:flutter/widgets.dart' show InheritedWidget, TextScaler;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:community_charts_flutter/src/graphics_factory.dart';

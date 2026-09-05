@@ -14,7 +14,7 @@
 // limitations under the License.
 
 import 'dart:ui' show TextDirection;
-import 'package:flutter/material.dart'
+import 'package:material_ui/material_ui.dart'
     show
         AnimationController,
         BuildContext,

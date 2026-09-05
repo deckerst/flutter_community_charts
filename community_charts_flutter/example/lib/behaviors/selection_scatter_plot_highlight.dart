@@ -36,7 +36,7 @@ import 'dart:math';
 // EXCLUDE_FROM_GALLERY_DOCS_END
 import 'package:community_charts_flutter/community_charts_flutter.dart'
     as charts;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SelectionScatterPlotHighlight extends StatelessWidget {
   final List<charts.Series<dynamic, num>> seriesList;
@@ -123,7 +123,7 @@ class SelectionScatterPlotHighlight extends StatelessWidget {
       )
         // Accessor function that associates each datum with a symbol renderer.
         ..setAttribute(
-            charts.pointSymbolRendererFnKey, (int index) => data[index].shape)
+            charts.pointSymbolRendererFnKey, (int? index) => (index != null ? data[index].shape : null) ?? 'circle')
         // Default symbol renderer ID for data that have no defined shape.
         ..setAttribute(charts.pointSymbolRendererIdKey, 'rect')
     ];

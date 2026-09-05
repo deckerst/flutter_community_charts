@@ -197,7 +197,7 @@ class LinePointHighlighter<D> implements ChartBehavior<D> {
     final allSelectedDatumDetails =
         _chart.getSelectedDatumDetails(selectionModelType);
     final selectedDatumDetails = allSelectedDatumDetails.where((element) =>
-        _seriesIds == null || _seriesIds!.contains(element.series?.id));
+        _seriesIds == null || _seriesIds.contains(element.series?.id));
 
     // Create a new map each time to ensure that we have it sorted in the
     // selection model order. This preserves the "nearestDetail" ordering, so
